@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPC-SPEA · Silnoproudá a přístrojová elektrotechnika</title>
+<meta name="description" content="Materiály a organizace předmětu BPC-SPEA Silnoproudá a přístrojová elektrotechnika – Ústav biomedicínského inženýrství, FEKT VUT v Brně, akademický rok 2026/27.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --ground:#ffffff;
+  --surface:#f5f5f4;
+  --ink:#1f2124;
+  --ink-2:#4b4f56;
+  --muted:#6f737a;
+  --line:#dfe1e4;
+  --line-strong:#b9bcc2;
+  --accent:#e4002b;
+  --accent-ink:#b8001f;
+  --accent-soft:#fdeef1;
+  --focus:#005bbb;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#151618;
+    --surface:#1e2023;
+    --ink:#ececea;
+    --ink-2:#c3c5c9;
+    --muted:#9a9ea5;
+    --line:#2d3034;
+    --line-strong:#474b51;
+    --accent:#ff3b57;
+    --accent-ink:#ff6b80;
+    --accent-soft:#2b1a1e;
+    --focus:#6db3ff;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#151618;
+  --surface:#1e2023;
+  --ink:#ececea;
+  --ink-2:#c3c5c9;
+  --muted:#9a9ea5;
+  --line:#2d3034;
+  --line-strong:#474b51;
+  --accent:#ff3b57;
+  --accent-ink:#ff6b80;
+  --accent-soft:#2b1a1e;
+  --focus:#6db3ff;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Source Sans 3","Source Sans Pro","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;
+  line-height:1.5;
+  border-top:4px solid var(--accent);
+}
+a{color:var(--accent-ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:2px}
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance;font-weight:700}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+
+.wrap{max-width:1040px;margin:0 auto;padding-inline:24px}
+@media (max-width:480px){.wrap{padding-inline:16px}}
+
+/* identity line */
+.ident{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;
+  padding-block:12px;border-bottom:1px solid var(--line);
+  font-size:14px;color:var(--muted);
+}
+.ident .org{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.ident .org strong{color:var(--ink-2);font-weight:600;letter-spacing:.02em;text-transform:uppercase;font-size:13px}
+.ident .org a{color:inherit;text-decoration:none}
+.ident .org a:hover{color:var(--accent)}
+.ident nav{display:flex;flex-wrap:wrap;gap:4px 18px}
+.ident nav a{color:var(--ink-2);text-decoration:none;font-weight:600;font-size:14px}
+.ident nav a:hover{color:var(--accent)}
+
+/* course header */
+.head{padding-block:40px 32px;border-bottom:1px solid var(--line)}
+.head .code{font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.head h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:-.01em;margin-top:6px;max-width:22ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 0;margin-top:18px;font-size:16px;color:var(--ink-2)}
+.meta span{display:inline-flex;align-items:center}
+.meta span + span::before{content:"";display:inline-block;width:1px;height:14px;background:var(--line-strong);margin-inline:14px}
+.meta b{font-weight:600;color:var(--ink)}
+@media (max-width:640px){
+  .meta{flex-direction:column;gap:4px}
+  .meta span{display:block}
+  .meta span + span::before{display:none}
+}
+
+/* sections */
+section{padding-block:40px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.sec-head h2{font-size:24px}
+.sec-head .note{font-size:15px;color:var(--muted)}
+.prose{max-width:68ch;color:var(--ink-2)}
+.prose p + p{margin-top:12px}
+
+/* tests block — the one lifted object on the page */
+.tests{
+  border:1px solid var(--line-strong);
+  background:var(--surface);
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.tests > div{padding:22px 26px}
+.tests > div + div{border-left:1px solid var(--line-strong)}
+.tests .lbl{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tests .date{font-size:clamp(24px,3.2vw,30px);font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tests .date small{font-size:.6em;font-weight:600;color:var(--ink-2);margin-left:8px}
+.tests dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:16px}
+.tests dt{color:var(--muted)}
+.tests dd{margin:0;color:var(--ink)}
+.tests .rooms{font-weight:600;font-variant-numeric:tabular-nums}
+.tests .scope{margin-top:14px;padding:10px 12px;background:var(--accent-soft);border-left:3px solid var(--accent);font-size:15px;color:var(--ink)}
+.tests-foot{
+  grid-column:1 / -1;border-top:1px solid var(--line-strong);
+  padding:14px 26px !important;font-size:15px;color:var(--ink-2);
+  display:flex;flex-wrap:wrap;gap:6px 28px;justify-content:space-between
+}
+@media (max-width:700px){
+  .tests{grid-template-columns:1fr}
+  .tests > div + div{border-left:0;border-top:1px solid var(--line-strong)}
+  .tests-foot{border-top:1px solid var(--line-strong)}
+}
+
+/* teachers */
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:0 32px}
+.people li{padding-block:4px}
+.people .name{font-weight:700;font-size:18px}
+.people .role{color:var(--muted);font-size:15px;margin-top:2px}
+.people .mail{font-size:15px;margin-top:6px}
+@media (max-width:700px){.people{grid-template-columns:1fr;gap:14px}}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:36px}
+.two h3{font-size:17px;margin-bottom:8px}
+@media (max-width:700px){.two{grid-template-columns:1fr;gap:28px}}
+
+.file{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:9px 14px 9px 12px;border:1px solid var(--line-strong);
+  color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;background:var(--ground);
+  white-space:nowrap;
+}
+.file:hover{border-color:var(--accent);color:var(--accent-ink)}
+.file .ext{font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 5px;border:1px solid currentColor;line-height:1.2}
+.file .size{font-weight:400;color:var(--muted);font-size:14px}
+
+/* schedule tables */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 10px 0;border-bottom:2px solid var(--line-strong);white-space:nowrap}
+td{padding:14px 12px 14px 0;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{width:2.2em;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600}
+td.d{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink-2);width:9.5em}
+td.d .wd{color:var(--muted);font-size:14px;margin-right:4px}
+td.t .title{font-weight:600}
+td.t .desc{color:var(--ink-2);font-size:15px;margin-top:4px;max-width:62ch}
+td.who{white-space:nowrap;color:var(--ink-2);width:7em}
+td.f{width:17em}
+td.f .files{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+td.f .file{font-size:14px;padding:6px 10px 6px 8px}
+.tbd{color:var(--muted);font-size:15px;font-style:italic}
+.ver{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line-strong);padding:1px 6px;margin-left:8px;vertical-align:middle;text-transform:uppercase}
+tr.off td{color:var(--muted);background:var(--surface)}
+tr.off td.t .title{font-weight:400;font-style:italic}
+@media (max-width:760px){
+  td.who,th.who{display:none}
+  td.f{width:auto}
+}
+@media (max-width:640px){
+  table{font-size:15px}
+  thead{display:none}
+  tr,td{display:block;width:auto}
+  td{padding:0;border:0}
+  tr{padding-block:14px;border-bottom:1px solid var(--line)}
+  tr:last-child{border-bottom:0}
+  td.n{display:inline;width:auto;margin-right:8px}
+  td.d{display:inline;white-space:normal}
+  td.d br{display:none}
+  td.d .wd + *{margin-left:0}
+  td.d .wd:nth-of-type(2){margin-left:10px}
+  td.t{margin-top:4px}
+  td.who{display:block;white-space:normal;font-size:14px;color:var(--muted);margin-top:4px}
+  td.who:empty{display:none}
+  td.f{margin-top:10px}
+  td.f:empty{display:none}
+  td.f .files{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .file{white-space:normal}
+  tr.off{padding-inline:10px}
+}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding-block:26px 40px;font-size:14px;color:var(--muted)}
+footer .cols{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 32px}
+footer a{color:inherit}
+footer .upd{font-variant-numeric:tabular-nums}
+
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+}
+@media print{
+  body{border-top:0;font-size:12pt}
+  .ident nav{display:none}
+  .file{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="ident">
+    <div class="org">
+      <strong>Ústav biomedicínského inženýrství</strong>
+      <a href="https://www.fekt.vut.cz/" rel="noopener">FEKT VUT v Brně</a>
+    </div>
+    <nav aria-label="Navigace na stránce">
+      <a href="#terminy">Termíny testů</a>
+      <a href="#organizace">Organizace</a>
+      <a href="#prednasky">Přednášky</a>
+      <a href="#cviceni">Cvičení</a>
+    </nav>
+  </div>
+
+  <div class="head">
+    <p class="code">BPC-SPEA · 2026/27</p>
+    <h1>Silnoproudá a přístrojová elektrotechnika</h1>
+    <p class="meta">
+      <span><b>Studijní program</b>&nbsp;BPC-BTB Biomedicínská technika a bioinformatika</span>
+      <span><b>2. ročník</b></span>
+      <span><b>zimní semestr</b></span>
+      <span>garant Ing. Martin Králík</span>
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="terminy">
+    <div class="sec-head">
+      <h2>Termíny testů</h2>
+      <p class="note">Oba testy se píší v pondělí v čase přednášky.</p>
+    </div>
+
+    <div class="tests">
+      <div>
+        <p class="lbl">Půlsemestrální test</p>
+        <p class="date">9. 11. 2026<small>pondělí</small></p>
+        <dl>
+          <dt>Místnosti</dt><dd class="rooms">SD2.99 a SF2.162</dd>
+          <dt>Hodnocení</dt><dd>max. 30 bodů</dd>
+        </dl>
+        <p class="scope"><strong>Rozsah:</strong> přednáška 1 a cvičení 1 až 6.</p>
+      </div>
+      <div>
+        <p class="lbl">Závěrečný test</p>
+        <p class="date">7. 12. 2026<small>pondělí</small></p>
+        <dl>
+          <dt>Místnosti</dt><dd class="rooms">SD2.99 a SF2.162</dd>
+          <dt>Hodnocení</dt><dd>max. 70 bodů</dd>
+        </dl>
+        <p class="scope"><strong>Rozsah:</strong> všechny přednášky a cvičení.</p>
+      </div>
+      <div class="tests-foot">
+        <span>Podmínky klasifikovaného zápočtu a bodové hodnocení stanovuje vyhláška předmětu.</span>
+        <a href="Vyhlaska_k_hodnoceni_BPC-SPEA_2026-27.pdf">Vyhláška předmětu (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="organizace">
+    <div class="sec-head">
+      <h2>Vyučující</h2>
+    </div>
+    <ul class="people">
+      <li>
+        <p class="name">Ing. Martin Králík</p>
+        <p class="role">garant předmětu · přednášky · cvičení 1, 2 a 9</p>
+        <p class="mail"><a href="mailto:kralikmartin@vut.cz">kralikmartin@vut.cz</a></p>
+      </li>
+      <li>
+        <p class="name">Ing. Martin Mézl, Ph.D.</p>
+        <p class="role">cvičení 3–5</p>
+        <p class="mail"><a href="mailto:mezl@vut.cz">mezl@vut.cz</a></p>
+      </li>
+      <li>
+        <p class="name">Ing. Jiří Sekora, MBA</p>
+        <p class="role">cvičení 6–8</p>
+        <p class="mail"><a href="mailto:sekora@vut.cz">sekora@vut.cz</a></p>
+      </li>
+    </ul>
+
+    <div class="two">
+      <div>
+        <h3>Vstupní znalosti</h3>
+        <div class="prose">
+          <p>Jsou požadovány základy elektroniky a znalosti na úrovni středoškolského studia a znalosti z absolvovaných předmětů.</p>
+          <p>Práce v laboratoři je podmíněna platnou kvalifikací „osoby poučené“, kterou musí studenti získat před zahájením výuky. Informace k této kvalifikaci jsou uvedeny ve Směrnici děkana <em>Seznámení studentů s bezpečnostními předpisy</em>.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Vyhláška předmětu</h3>
+        <div class="prose">
+          <p>Podmínky pro získání klasifikovaného zápočtu a bodové hodnocení pro akademický rok 2026/27.</p>
+        </div>
+        <p style="margin-top:14px">
+          <a class="file" href="Vyhlaska_k_hodnoceni_BPC-SPEA_2026-27.pdf"><span class="ext">PDF</span>Vyhláška k hodnocení BPC-SPEA 2026/27<span class="size">134 kB</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="prednasky">
+    <div class="sec-head">
+      <h2>Přednášky</h2>
+      <p class="note">Pondělí</p>
+    </div>
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Datum</th><th>Téma</th><th>Materiály</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">1</td>
+          <td class="d"><span class="wd">po</span>14. 9.<br><span class="wd">po</span>21. 9.</td>
+          <td class="t"><p class="title">Elektronické součástky – od elektřiny k obvodovým prvkům</p><p class="desc">Téma je rozděleno na dvě přednášky.</p></td>
+          <td class="f"><div class="files"><a class="file" href="prednasky/01_elektronicke_soucastky_v2026.pptx"><span class="ext">PPTX</span>Přednáška 1<span class="size">4,0 MB</span></a></div></td>
+        </tr>
+        <tr class="off">
+          <td class="n"></td>
+          <td class="d"><span class="wd">po</span>28. 9.</td>
+          <td class="t"><p class="title">Přednáška odpadá – státní svátek</p></td>
+          <td class="f"></td>
+        </tr>
+        <tr>
+          <td class="n">2</td>
+          <td class="d"><span class="wd">po</span>5. 10.</td>
+          <td class="t"><p class="title">Základní pojmy, rozvodné soustavy, jištění<span class="ver">verze 2025</span></p></td>
+          <td class="f"><div class="files"><a class="file" href="prednasky/02__pojmy_rozvody_jisteni.pptm"><span class="ext">PPTM</span>Přednáška 2<span class="size">3,9 MB</span></a></div></td>
+        </tr>
+        <tr>
+          <td class="n">3</td>
+          <td class="d"><span class="wd">po</span>12. 10.</td>
+          <td class="t"><p class="title">Napájecí zdroje, elektrochemické zdroje, stabilizátory, UPS<span class="ver">verze 2025</span></p></td>
+          <td class="f"><div class="files"><a class="file" href="prednasky/03_napajeci_zdroje_elchem_zdroje_stabilizatory_UPS.pptx"><span class="ext">PPTX</span>Přednáška 3<span class="size">6,8 MB</span></a></div></td>
+        </tr>
+        <tr class="off">
+          <td class="n"></td>
+          <td class="d"><span class="wd">po</span>19. 10.</td>
+          <td class="t"><p class="title">Přednáška odpadá</p></td>
+          <td class="f"></td>
+        </tr>
+        <tr>
+          <td class="n">4</td>
+          <td class="d"><span class="wd">po</span>26. 10.</td>
+          <td class="t"><p class="title">Elektrické stroje a transformátory<span class="ver">verze 2025</span></p></td>
+          <td class="f"><div class="files"><a class="file" href="prednasky/04_elektricke_stroje_tansformatory.pptx"><span class="ext">PPTX</span>Přednáška 4<span class="size">29 MB</span></a></div></td>
+        </tr>
+        <tr>
+          <td class="n">5</td>
+          <td class="d"><span class="wd">po</span>2. 11.</td>
+          <td class="t"><p class="title">Konstrukce elektrických zařízení a EMC<span class="ver">verze 2025</span></p></td>
+          <td class="f"><div class="files"><a class="file" href="prednasky/05_konstrukce_el_zarizeni_EMC.pptx"><span class="ext">PPTX</span>Přednáška 5<span class="size">3,8 MB</span></a></div></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="cviceni">
+    <div class="sec-head">
+      <h2>Laboratorní cvičení</h2>
+      <p class="note">Úterý a pátek</p>
+    </div>
+    <div class="prose" style="margin-bottom:22px">
+      <p>Účast na laboratorních cvičeních je povinná. Z cvičení se omlouvejte e-mailem vyučujícímu, který dané cvičení vede.</p>
+    </div>
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Datum</th><th>Náplň cvičení</th><th class="who">Vyučující</th><th>Materiály</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">1</td>
+          <td class="d"><span class="wd">út</span>15. 9.<br><span class="wd">pá</span>18. 9.</td>
+          <td class="t"><p class="title">Úvodní cvičení, přehled přístrojů, časová konstanta</p><p class="desc">Seznámení s vybavením laboratoře – multimetr, osciloskop, laboratorní zdroj, funkční generátor a nepájivé pole. Úlohy: výpočet a měření napětí a proudu na rezistorech, zobrazení průběhů na osciloskopu, měření časové konstanty RC článku.</p></td>
+          <td class="who">Králík</td>
+          <td class="f"><div class="files"><a class="file" href="cviceni/CV1_v2026.pptx"><span class="ext">PPTX</span>Cvičení 1<span class="size">6,5 MB</span></a></div></td>
+        </tr>
+        <tr>
+          <td class="n">2</td>
+          <td class="d"><span class="wd">út</span>22. 9.<br><span class="wd">pá</span>25. 9.</td>
+          <td class="t"><p class="title">Obvody střídavého proudu, protokol měření frekvenční charakteristiky</p><p class="desc">RC článek jako dolní a horní propust – mezní frekvence, útlum v dB, fázový posun. Úloha: měření frekvenční charakteristiky obou zapojení (R = 4,7 kΩ, C = 10 nF) a její zpracování do pracovního listu.</p></td>
+          <td class="who">Králík</td>
+          <td class="f"><div class="files">
+            <a class="file" href="cviceni/CV2_v2026.pptx"><span class="ext">PPTX</span>Cvičení 2<span class="size">513 kB</span></a>
+            <a class="file" href="cviceni/cv_2_pracovni_list_RC_filtr.pdf"><span class="ext">PDF</span>Pracovní list – RC filtr<span class="size">73 kB</span></a>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="n">3</td>
+          <td class="d"><span class="wd">út</span>29. 9.<br><span class="wd">pá</span>2. 10.</td>
+          <td class="t"><p class="title">PN přechod, dioda, Zenerova dioda, usměrnění, stabilizace</p></td>
+          <td class="who">Mézl</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">4</td>
+          <td class="d"><span class="wd">út</span>6. 10.<br><span class="wd">pá</span>9. 10.</td>
+          <td class="t"><p class="title">Tranzistor – vlastnosti, činnost, spínání, AKO</p></td>
+          <td class="who">Mézl</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">5</td>
+          <td class="d"><span class="wd">út</span>13. 10.<br><span class="wd">pá</span>16. 10.</td>
+          <td class="t"><p class="title">Operační zesilovače</p></td>
+          <td class="who">Mézl</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">6</td>
+          <td class="d"><span class="wd">út</span>20. 10.<br><span class="wd">pá</span>23. 10.</td>
+          <td class="t"><p class="title">Polovodičové spínací prvky, řízení tyristorem</p></td>
+          <td class="who">Sekora</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">7</td>
+          <td class="d"><span class="wd">út</span>27. 10.<br><span class="wd">pá</span>30. 10.</td>
+          <td class="t"><p class="title">PWM, řízení stejnosměrných motorů</p></td>
+          <td class="who">Sekora</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">8</td>
+          <td class="d"><span class="wd">út</span>3. 11.<br><span class="wd">pá</span>6. 11.</td>
+          <td class="t"><p class="title">Spínané zdroje, princip DC/DC měniče</p></td>
+          <td class="who">Sekora</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">9</td>
+          <td class="d"><span class="wd">út</span>10. 11.<br><span class="wd">pá</span>13. 11.</td>
+          <td class="t"><p class="title">Plovoucí vstupy a optočleny</p></td>
+          <td class="who">Králík</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr class="off">
+          <td class="n"></td>
+          <td class="d"><span class="wd">út</span>17. 11.<br><span class="wd">pá</span>20. 11.</td>
+          <td class="t"><p class="title">Výuka odpadá – státní svátek</p></td>
+          <td class="who"></td>
+          <td class="f"></td>
+        </tr>
+        <tr>
+          <td class="n">10</td>
+          <td class="d"><span class="wd">út</span>24. 11.<br><span class="wd">pá</span>27. 11.</td>
+          <td class="t"><p class="title">Mikroprocesory 1</p></td>
+          <td class="who">všichni</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+        <tr>
+          <td class="n">11</td>
+          <td class="d"><span class="wd">út</span>1. 12.<br><span class="wd">pá</span>4. 12.</td>
+          <td class="t"><p class="title">Mikroprocesory 2</p></td>
+          <td class="who">všichni</td>
+          <td class="f"><span class="tbd">bude doplněno</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div class="cols">
+    <div>
+      <a href="https://www.ubmi.fekt.vut.cz/" rel="noopener">Ústav biomedicínského inženýrství</a> · Fakulta elektrotechniky a komunikačních technologií, VUT v Brně · Technická 3058/10, 616 00 Brno
+    </div>
+    <div class="upd">Aktualizováno 11. 9. 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>
